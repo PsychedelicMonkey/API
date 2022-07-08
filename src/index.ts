@@ -9,6 +9,7 @@ import { createServer } from 'http';
 import connectDB from './config/db';
 import logger from './config/logger';
 import schema from './graphql';
+import authToken from './middleware/authToken';
 
 const port = process.env.PORT || 5000;
 
@@ -23,6 +24,11 @@ connectDB();
     csrfPrevention: true,
     cache: 'bounded',
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    context: async ({ req, res }) => {
+      const user = await authToken(req);
+
+      return { user, req, res };
+    },
   });
   await server.start();
   server.applyMiddleware({ app });
