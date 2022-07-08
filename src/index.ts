@@ -2,10 +2,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { ApolloServer } from 'apollo-server-express';
-import { ApolloServerPluginDrainHttpServer, gql } from 'apollo-server-core';
-import express, { Application } from 'express';
+import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import { createServer } from 'http';
 
+import app from './app';
 import connectDB from './config/db';
 import logger from './config/logger';
 import schema from './graphql';
@@ -16,7 +16,6 @@ const port = process.env.PORT || 5000;
 connectDB();
 
 (async () => {
-  const app: Application = express();
   const httpServer = createServer(app);
 
   const server = new ApolloServer({
