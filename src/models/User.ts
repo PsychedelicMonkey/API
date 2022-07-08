@@ -4,7 +4,11 @@ import { Document, model, Schema } from 'mongoose';
 interface IUser extends Document {
   username: string;
   email: string;
+  firstName: string;
+  lastName: string;
   password: string;
+  plan: string;
+  bio?: string;
 
   checkPassword(password: string): Promise<boolean>;
 }
@@ -21,10 +25,27 @@ const User = new Schema<IUser>(
       required: true,
       unique: true,
     },
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
     password: {
       type: String,
       required: true,
       select: false,
+    },
+    plan: {
+      type: String,
+      enum: ['free', 'premium'],
+      default: 'free',
+      select: false,
+    },
+    bio: {
+      type: String,
     },
   },
   { timestamps: true }

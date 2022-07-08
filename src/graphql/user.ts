@@ -8,11 +8,30 @@ export const typeDefs = gql`
   type User {
     id: ID!
     username: String!
+    firstName: String!
+    lastName: String!
+    plan: String
+    bio: String
   }
 
   type Auth {
     token: String!
     user: User!
+  }
+
+  input RegisterInput {
+    username: String!
+    email: String!
+    firstName: String!
+    lastName: String!
+    password: String!
+  }
+
+  input UpdateInput {
+    username: String
+    firstName: String
+    lastName: String
+    bio: String
   }
 
   type Query {
@@ -22,8 +41,10 @@ export const typeDefs = gql`
   }
 
   type Mutation {
+    updateUser(input: UpdateInput): User!
+
     loginUser(username: String!, password: String!): Auth!
-    registerUser(username: String!, email: String!, password: String!): Auth!
+    registerUser(input: RegisterInput): Auth!
   }
 `;
 
@@ -50,6 +71,9 @@ export const resolvers = {
   },
 
   Mutation: {
+    // =======================================================================
+    // Log in to a registered user account
+    // =======================================================================
     loginUser: async (parent: any, args: any) => {
       const { username, password } = args;
 
@@ -77,11 +101,22 @@ export const resolvers = {
       return { token, user };
     },
 
+    // =======================================================================
+    // Register a new user account
+    // =======================================================================
     registerUser: async (parent: any, args: any) => {
-      const { username, email, password } = args;
+      const {
+        input: { username, email, firstName, lastName, password },
+      } = args;
 
       // Create user
-      const user = await User.create({ username, email, password });
+      const user = await User.create({
+        username,
+        email,
+        firstName,
+        lastName,
+        password,
+      });
 
       // Create auth token
       const token = await sign({ id: user.id }, JWT_SECRET, {
@@ -89,6 +124,27 @@ export const resolvers = {
       });
 
       return { token, user };
+    },
+
+    // =======================================================================
+    // Update user profile
+    // =======================================================================
+    updateUser: async (parent: any, args: any, ctx: any) => {
+      if (!ctx.user) {
+        throw new AuthenticationError('unauthorized');
+      }
+
+      const {
+        input: { username, firstName, lastName, bio },
+      } = args;
+
+      const user = await User.findByIdAndUpdate(
+        ctx.user.id,
+        { username, firstName, lastName, bio },
+        { new: true }
+      );
+
+      return user;
     },
   },
 };
