@@ -6,9 +6,12 @@ import { ApolloServerPluginDrainHttpServer, gql } from 'apollo-server-core';
 import express, { Application } from 'express';
 import { createServer } from 'http';
 
+import connectDB from './config/db';
 import logger from './config/logger';
 
 const port = process.env.PORT || 5000;
+
+connectDB();
 
 const typeDefs = gql`
   type Query {
