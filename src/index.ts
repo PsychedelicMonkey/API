@@ -8,47 +8,18 @@ import { createServer } from 'http';
 
 import connectDB from './config/db';
 import logger from './config/logger';
-
-import User from './models/User';
+import schema from './graphql';
 
 const port = process.env.PORT || 5000;
 
 connectDB();
-
-const typeDefs = gql`
-  type User {
-    id: ID!
-    username: String!
-  }
-
-  type Query {
-    user(id: ID!): User!
-    users: [User]!
-  }
-`;
-
-const resolvers = {
-  Query: {
-    user: async (parent: any, args: any) => {
-      const { id } = args;
-      const user = await User.findById(id);
-      return user;
-    },
-
-    users: async () => {
-      const users = await User.find();
-      return users;
-    },
-  },
-};
 
 (async () => {
   const app: Application = express();
   const httpServer = createServer(app);
 
   const server = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema,
     csrfPrevention: true,
     cache: 'bounded',
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],

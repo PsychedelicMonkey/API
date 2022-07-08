@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/PsychedelicMonkey/API#readme",
   "dependencies": {
+    "@graphql-tools/schema": "^8.5.0",
     "apollo-server-core": "^3.9.0",
     "apollo-server-express": "^3.9.0",
     "bcryptjs": "^2.4.3",
