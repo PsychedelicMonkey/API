@@ -51,6 +51,9 @@ export const typeDefs = gql`
 
 export const resolvers = {
   Query: {
+    // =======================================================================
+    // Retrieve account details
+    // =======================================================================
     me: async (parent: any, args: any, ctx: any) => {
       if (!ctx.user) {
         throw new AuthenticationError('unauthorized');
@@ -59,12 +62,18 @@ export const resolvers = {
       return ctx.user;
     },
 
+    // =======================================================================
+    // Get a registered user account by ID
+    // =======================================================================
     user: async (parent: any, args: any) => {
       const { id } = args;
       const user = await User.findById(id);
       return user;
     },
 
+    // =======================================================================
+    // Get all registered users
+    // =======================================================================
     users: async () => {
       const users = await User.find();
       return users;
