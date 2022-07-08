@@ -9,6 +9,7 @@ interface IUser extends Document {
   password: string;
   plan: string;
   bio?: string;
+  avatar?: string;
 
   checkPassword(password: string): Promise<boolean>;
 }
@@ -45,6 +46,9 @@ const User = new Schema<IUser>(
       select: false,
     },
     bio: {
+      type: String,
+    },
+    avatar: {
       type: String,
     },
   },

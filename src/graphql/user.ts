@@ -12,6 +12,7 @@ export const typeDefs = gql`
     lastName: String!
     plan: String
     bio: String
+    avatar: String
   }
 
   type Auth {
