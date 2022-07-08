@@ -1,4 +1,5 @@
 import path from 'path';
+import config from 'config';
 import express, { Application, NextFunction, Request, Response } from 'express';
 import sharp from 'sharp';
 
@@ -6,11 +7,13 @@ import { upload } from './config/upload';
 import auth from './middleware/authMiddleware';
 import User from './models/User';
 
+const UPLOAD_DIR: string = config.get('uploads.directory');
+
 // Initialize express
 const app: Application = express();
 
 // Set static folder
-app.use(express.static('public/'));
+app.use(express.static(UPLOAD_DIR));
 
 // Upload endpoint
 app.post('/upload', auth, (req: Request, res: Response, next: NextFunction) => {
@@ -26,7 +29,7 @@ app.post('/upload', auth, (req: Request, res: Response, next: NextFunction) => {
         )}`;
 
         // Resize image
-        await sharp(buffer).resize(200, 200).toFile(`public/${filename}`);
+        await sharp(buffer).resize(200, 200).toFile(`${UPLOAD_DIR}${filename}`);
 
         // Update avatar
         const user = await User.findByIdAndUpdate(

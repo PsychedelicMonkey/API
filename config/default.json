@@ -1,0 +1,14 @@
+{
+  "logging": {
+    "level": "info",
+    "directory": "logs/",
+    "files": {
+      "error": "error.log",
+      "combined": "combined.log",
+      "exceptions": "exceptions.log"
+    }
+  },
+  "uploads": {
+    "directory": "public/"
+  }
+}
