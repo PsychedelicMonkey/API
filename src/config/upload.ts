@@ -2,15 +2,7 @@ import path from 'path';
 import { Request } from 'express';
 import multer, { FileFilterCallback } from 'multer';
 
-const storage = multer.diskStorage({
-  destination: 'public/',
-  filename: (req: Request, file: Express.Multer.File, cb) => {
-    cb(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
-    );
-  },
-});
+const storage = multer.memoryStorage();
 
 const fileFilter = (
   req: Request,

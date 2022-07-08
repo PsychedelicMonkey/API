@@ -1,4 +1,6 @@
+import path from 'path';
 import express, { Application, NextFunction, Request, Response } from 'express';
+import sharp from 'sharp';
 
 import { upload } from './config/upload';
 import auth from './middleware/authMiddleware';
@@ -17,7 +19,14 @@ app.post('/upload', auth, (req: Request, res: Response, next: NextFunction) => {
       if (err) throw err;
 
       if (req.file) {
-        const { filename } = req.file;
+        const { fieldname, buffer, originalname } = req.file;
+
+        const filename = `${fieldname}-${Date.now()}${path.extname(
+          originalname
+        )}`;
+
+        // Resize image
+        await sharp(buffer).resize(200, 200).toFile(`public/${filename}`);
 
         // Update avatar
         const user = await User.findByIdAndUpdate(
